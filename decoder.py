@@ -18,30 +18,35 @@ ascii_range = [
 
 message1 = []
 message2 = []
+keys = []
 
 for i in range(len(cipher1) // 2):  # every 2 hex represent an ASCII char
     char1 = []
     char2 = []
+    key = []
     
     int1 = int(cipher1[2*i:2*i+2], 16)
     int2 = int(cipher2[2*i:2*i+2], 16)
     
-    for key in range(256):
-        result1 = int1 ^ key    # message = ciphertext xor key
-        result2 = int2 ^ key
+    for k in range(256):
+        result1 = int1 ^ k    # message = ciphertext xor key
+        result2 = int2 ^ k
         
         # Check whether the decipherted messages are characters
         if result1 in ascii_range and result2 in ascii_range:
             char1.append(chr(result1))
             char2.append(chr(result2))
+            key.append(hex(key))
     
     if char1 == [] or char2 == []:
         print(f"Error: Search range too small. Empty result at {i}: {cipher1[i:i+2]} {cipher2[i:i+2]}")
     
     message1.append(char1)
     message2.append(char2)
+    keys.append(key)
 
 
 print("\nLength:", len(message1))
 print("Message 1:", message1)
 print("Message 2:", message2)
+print("Keys:", keys)
