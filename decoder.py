@@ -1,52 +1,73 @@
-cipher1 = "2c1549100043130b1000290a1b"
-cipher2 = "3f16421617175203114c020b1c"
-
-if len(cipher1) != len(cipher2):
-    raise Exception("Error: Ciphertexts length not match")
+CIPHERS = [
+    "2c1549100043130b1000290a1b",
+    "3f16421617175203114c020b1c",
+]
 
 # Decimal range in ASCII
-ascii_range = [
-    *range(48, 58),    # Numbers
+ASCII_RANGE = [
     *range(65, 91),    # Upper alphabets
     *range(97, 123),   # Lower alphabets
-    ord('\\'),
+    #*range(48, 58),    # Numbers
+    ord(' '),
+    #ord('I'),
+    #ord('\\'),
     #ord('-'),
     #ord('.'),
-    #ord('I'),
 ]
 
 
-message1 = []
-message2 = []
-keys = []
+def is_valid_len(num, len):
+    # Ensure the ciphertexts have an even length
+    if len % 2 != 0:
+        raise Exception("Error: Odd ciphertext length") 
 
-for i in range(len(cipher1) // 2):  # every 2 hex represent an ASCII char
-    char1 = []
-    char2 = []
-    key = []
-    
-    int1 = int(cipher1[2*i:2*i+2], 16)
-    int2 = int(cipher2[2*i:2*i+2], 16)
-    
-    for k in range(256):
-        result1 = int1 ^ k    # message = ciphertext xor key
-        result2 = int2 ^ k
-        
-        # Check whether the decipherted messages are characters
-        if result1 in ascii_range and result2 in ascii_range:
-            char1.append(chr(result1))
-            char2.append(chr(result2))
-            key.append(hex(key))
-    
-    if char1 == [] or char2 == []:
-        print(f"Error: Search range too small. Empty result at {i}: {cipher1[i:i+2]} {cipher2[i:i+2]}")
-    
-    message1.append(char1)
-    message2.append(char2)
-    keys.append(key)
+    # Ensure the ciphertexts have the same length
+    for c in range(num - 1):
+        if len(CIPHERS[c]) != len(CIPHERS[c+1]):
+            raise Exception("Error: Ciphertext length not match")
 
 
-print("\nLength:", len(message1))
-print("Message 1:", message1)
-print("Message 2:", message2)
-print("Keys:", keys)
+def is_ascii(chars):
+    # Check if the characters are in the ASCII range
+    for char in chars:
+        if char not in ASCII_RANGE:
+            return False
+    return True
+
+
+def main():
+    cipher_num = len(CIPHERS)
+    cipher_len = len(CIPHERS[0]) // 2
+    is_valid_len(cipher_num, len(CIPHERS[0]))
+    
+    # Initialize the deciphered messages and their possible keys
+    messages = []
+    keys = []
+    for i in range(cipher_num):
+        messages.append([])
+        keys.append([])
+        for j in range(cipher_len):
+            messages[i].append([])
+            keys[i].append([])
+
+    for i in range(cipher_len):    # every 2 hex represent an ASCII char
+        # Convert the paired hex into dec
+        ints = []
+        for c in CIPHERS:
+            ints.append(int(c[2*i:2*i+2], 16))
+
+        # Try keys
+        for k in range(0xFF):
+            chars = []
+            for int in ints:
+                chars.append(int ^ k)    # message = ciphertext xor key
+
+            if is_ascii(chars):
+                for n in cipher_num:
+                    messages[n][i].append(chr(chars[n]))
+                    keys[n][i].append(hex(k))
+            
+        for j in range(cipher_len):
+            if messages[0][j] == []:
+                print(f"Warning: Search range too small. Empty result at position {i}")
+
