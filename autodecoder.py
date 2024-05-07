@@ -16,13 +16,15 @@ ASCII_RANGE = [
 
 
 def is_valid_len(num, length):
-    # Ensure the ciphertexts have an even length
-    if length % 2 != 0:
+    # Check if there are more than 2 ciphertexts
+    if num < 2:
+        raise Exception("Error: Not enough ciphertexts")
+    # Check if the ciphertexts have an even length
+    elif length % 2 != 0:
         raise Exception("Error: Odd ciphertext length") 
 
-    # Ensure the ciphertexts have the same length
+    # Check if the ciphertexts have the same length
     for c in range(num - 1):
-        
         if len(CIPHERS[c]) != len(CIPHERS[c+1]):
             raise Exception("Error: Ciphertext length not match")
 
@@ -36,6 +38,7 @@ def is_ascii(char):
 
 
 def display_results(key):
+    # Display the possible messages
     for cipher in CIPHERS:
         print("Message: {cipher}")
         for i in range(len(key)):
@@ -46,7 +49,8 @@ def display_results(key):
                 print("%-2s" % chr(char ^ k), end=' ')
             print()
         print()
-    
+
+    # Display the possible key
     print("\nKey:")
     for k in key:
         print("\t", end='')
@@ -62,7 +66,6 @@ def display_results(key):
 def main():
     is_valid_len(len(CIPHERS), len(CIPHERS[0]))
     
-    # Initialize possible keys of the deciphered messages
     key = []
     
     for i in range(len(CIPHERS[0]) // 2):    # every 2 hex represent an ASCII
@@ -71,7 +74,7 @@ def main():
         for cipher in CIPHERS:
             char.append(int(cipher[2*i:2*i+2], 16))
 
-        # Try keys
+        # Try all keys
         key.append([])
         for k in range(0xFF):
             msg = []
