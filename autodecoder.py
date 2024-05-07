@@ -15,7 +15,7 @@ ASCII_RANGE = [
 ]
 
 
-def is_valid_len(num, length):
+def is_valid(num, length):
     # Check if there are more than 2 ciphertexts
     if num < 2:
         raise Exception("Error: Not enough ciphertexts")
@@ -64,7 +64,7 @@ def display_results(key):
 
 
 def main():
-    is_valid_len(len(CIPHERS), len(CIPHERS[0]))
+    is_valid(len(CIPHERS), len(CIPHERS[0]))
     
     key = []
     
