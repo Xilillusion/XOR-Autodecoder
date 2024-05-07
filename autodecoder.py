@@ -40,7 +40,7 @@ def is_ascii(char):
 def display_results(key):
     # Display the possible messages
     for cipher in CIPHERS:
-        print("Message: {cipher}")
+        print(f"Message: {cipher}")
         for i in range(len(key)):
             print("\t", end='')
             
