@@ -89,9 +89,7 @@ def main():
     
     for i in range(C.len // 2):    # every 2 hex represent an ASCII
         # Convert the paired hex into dec
-        char = []
-        for cipher in C.ciphers:
-            char.append(int(cipher[2*i:2*i+2], 16))
+        char = [int(c[2*i:2*i+2], 16) for c in C.ciphers]
 
         # Try all keys
         key.append([])
