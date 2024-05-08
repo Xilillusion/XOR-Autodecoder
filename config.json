@@ -6,8 +6,9 @@
 	"SearchRange" : [
 		"LowerAlphabets",
 		"UpperAlphabets",
-		"Numbers",
+		"#Numbers",
 		" ",
-		"I am an invalid search range but the program will ignore me"
+		"Remove # to unlock numbers",
+		"We are invalid search range but the program will ignore us"
 	]
 }
