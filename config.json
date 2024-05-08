@@ -1,0 +1,13 @@
+{
+	"Ciphertexts" : [
+		"2c1549100043130b1000290a1b",
+   		"3f16421617175203114c020b1c"
+	],
+	"SearchRange" : [
+		"LowerAlphabets",
+		"UpperAlphabets",
+		"Numbers",
+		" ",
+		"I am an invalid search range but the program will ignore me"
+	]
+}
