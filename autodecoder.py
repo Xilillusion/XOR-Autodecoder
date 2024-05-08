@@ -1,3 +1,4 @@
+# Support both Hex and ASCII
 CIPHERS = [
     "2c1549100043130b1000290a1b",
     "3f16421617175203114c020b1c",
@@ -15,18 +16,32 @@ ASCII_RANGE = [
 ]
 
 
-def is_valid(num, length):
-    # Check if there are more than 2 ciphertexts
-    if num < 2:
-        raise Exception("Error: Not enough ciphertexts")
-    # Check if the ciphertexts have an even length
-    elif length % 2 != 0:
-        raise Exception("Error: Odd ciphertext length") 
+class Ciphers:
+    def __init__(self, ciphers):
+        self.ciphers = ciphers
+        self.num = len(ciphers)
+        self.len = max([len(c) for c in ciphers])
 
-    # Check if the ciphertexts have the same length
-    for c in range(num - 1):
-        if len(CIPHERS[c]) != len(CIPHERS[c+1]):
-            raise Exception("Error: Ciphertext length not match")
+    def is_valid(self):
+        # Check if there are more than 2 ciphertexts
+        assert self.num > 1, "Error: Not enough ciphertexts"
+        
+        # Check if the ciphertexts have an even length
+        assert self.len % 2 == 0, "Error: Odd ciphertext length"
+
+        for i in range(self.num):
+            # Check if the ciphertexts have the same length
+            if len(self.ciphers[i]) != self.len:
+                assert len(self.ciphers[i]) * 2 == self.len, "Error: Ciphertext length not match"
+                self.ciphers[i] = self.ciphers[i].encode().hex()
+
+            else:
+                # Convert ASCII ciphers to hex
+                try:
+                    int(self.ciphers[i], 16)
+                except ValueError:
+                    self.ciphers[i] = self.ciphers[i].encode().hex()
+                    self.len *= 2
 
 
 def is_ascii(char):
@@ -37,9 +52,9 @@ def is_ascii(char):
     return True
 
 
-def display_results(key):
+def display_results(ciphers, key):
     # Display the possible messages
-    for cipher in CIPHERS:
+    for cipher in ciphers:
         print(f"Message: {cipher}")
         for i in range(len(key)):
             print("\t", end='')
@@ -64,14 +79,18 @@ def display_results(key):
 
 
 def main():
-    is_valid(len(CIPHERS), len(CIPHERS[0]))
+    C = Ciphers(CIPHERS)
+    try:
+        C.is_valid()
+    except AssertionError as e:
+        print(e)
     
     key = []
     
-    for i in range(len(CIPHERS[0]) // 2):    # every 2 hex represent an ASCII
+    for i in range(C.len // 2):    # every 2 hex represent an ASCII
         # Convert the paired hex into dec
         char = []
-        for cipher in CIPHERS:
+        for cipher in C.ciphers:
             char.append(int(cipher[2*i:2*i+2], 16))
 
         # Try all keys
@@ -87,7 +106,7 @@ def main():
         if not key[i]:
             print(f"Warning: Search range too small. Empty result at position {i}")
     
-    display_results(key)
+    display_results(C.ciphers, key)
 
 
 if __name__ == "__main__":
