@@ -1,4 +1,4 @@
-# XOR-Autodecoder
+# XOR-(not so)Autodecoder
 Find out the key and decode ASCII ciphertexts 
 
 ## Prerequisites
