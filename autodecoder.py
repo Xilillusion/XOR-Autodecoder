@@ -21,18 +21,20 @@ class Ciphers:
         self.ciphers = ciphers
         self.num = len(ciphers)
         self.len = max([len(c) for c in ciphers])
+        
+        self.init_ciphers()
 
-    def is_valid(self):
+    def init_ciphers(self):
         # Check if there are more than 2 ciphertexts
-        assert self.num > 1, "Error: Not enough ciphertexts"
+        assert self.num > 1, "Not enough ciphertexts"
         
         # Check if the ciphertexts have an even length
-        assert self.len % 2 == 0, "Error: Odd ciphertext length"
+        assert self.len % 2 == 0, "Odd ciphertext length"
 
         for i in range(self.num):
             # Check if the ciphertexts have the same length
             if len(self.ciphers[i]) != self.len:
-                assert len(self.ciphers[i]) * 2 == self.len, "Error: Ciphertext length not match"
+                assert len(self.ciphers[i]) * 2 == self.len, "Ciphertext length not match"
                 self.ciphers[i] = self.ciphers[i].encode().hex()
 
             else:
@@ -80,16 +82,14 @@ def display_results(ciphers, key):
 
 def main():
     C = Ciphers(CIPHERS)
-    try:
-        C.is_valid()
-    except AssertionError as e:
-        print(e)
     
     key = []
     
     for i in range(C.len // 2):    # every 2 hex represent an ASCII
         # Convert the paired hex into dec
-        char = [int(c[2*i:2*i+2], 16) for c in C.ciphers]
+        char = []
+        for cipher in C.ciphers:
+            char.append(int(cipher[2*i:2*i+2], 16))
 
         # Try all keys
         key.append([])
