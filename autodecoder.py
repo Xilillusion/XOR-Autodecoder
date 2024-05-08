@@ -17,6 +17,7 @@ ASCII_RANGE = [
 
 
 class Ciphers:
+    """Initialize the ciphertexts"""
     def __init__(self, ciphers):
         self.ciphers = ciphers
         self.num = len(ciphers)
@@ -47,7 +48,7 @@ class Ciphers:
 
 
 def is_ascii(char):
-    # Check if the characters are in the ASCII range
+    '''Return True if all the characters are in ASCII range'''
     for c in char:
         if c not in ASCII_RANGE:
             return False
