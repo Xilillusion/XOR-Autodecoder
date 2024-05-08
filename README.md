@@ -6,7 +6,6 @@ Find out the key and decode ASCII ciphertexts
 
 ## To-Do
 - [x] Display results
-- [ ] Apply model to find out the best combination
 - [x] Write comments
 
 ## Acknowledgment
