@@ -1,23 +1,4 @@
-# Support both Hex and ASCII
-CIPHERS = [
-    "2c1549100043130b1000290a1b",
-    "3f16421617175203114c020b1c",
-]
-
-# Decimal range in ASCII
-ASCII_RANGE = [
-    *range(65, 91),    # Upper alphabets
-    *range(97, 123),   # Lower alphabets
-    #*range(48, 58),    # Numbers
-    ord(' '),
-    #ord('\\'),
-    #ord('-'),
-    #ord('.'),
-]
-
-
 class Ciphers:
-    """Initialize the ciphertexts"""
     def __init__(self, ciphers):
         self.ciphers = ciphers
         self.num = len(ciphers)
@@ -47,10 +28,34 @@ class Ciphers:
                     self.len *= 2
 
 
-def is_ascii(char):
-    '''Return True if all the characters are in ASCII range'''
+def read_config():
+    """Read and intitialize the config file"""
+    import json
+    with open('config.json', 'r') as f:
+        config = json.load(f)
+    
+    # Initialize the search_range
+    search_range = []
+    for i in config["SearchRange"]:
+        if i.lower() in ["lower", "loweralphabets"]:
+            search_range += range(97, 123)
+        elif i.upper() in ["UPPER", "UPPERALPHABETS"]:
+            search_range += range(65, 91)
+        elif i.lower() in ["num", "numbers"]:
+            search_range += range(48, 58)
+        else:
+            try:
+                search_range.append(ord(i))
+            except TypeError as e:
+                print(f'Warning: Invalid search range "{i}"')
+    
+    return config["Ciphertexts"], search_range
+
+
+def is_range(char, search_range):
+    """Return True if all the characters are in ASCII range"""
     for c in char:
-        if c not in ASCII_RANGE:
+        if c not in search_range:
             return False
     return True
 
@@ -82,7 +87,9 @@ def display_results(ciphers, key):
 
 
 def main():
-    C = Ciphers(CIPHERS)
+    ciphers, search_range = read_config()
+    
+    C = Ciphers(ciphers)
     
     key = []
     
@@ -99,7 +106,7 @@ def main():
             for c in char:
                 msg.append(c ^ k)    # message = ciphertext xor key
 
-            if is_ascii(msg):
+            if is_range(msg, search_range):
                 key[i].append(k)
 
         if not key[i]:
