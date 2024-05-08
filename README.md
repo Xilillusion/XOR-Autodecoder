@@ -2,7 +2,7 @@
 Find out the key and decode ASCII ciphertexts 
 
 ## Prerequisites
-- Nah
+- json
 
 ## To-Do
 - [x] Display results
