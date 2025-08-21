@@ -5,30 +5,28 @@ class Ciphers:
     def __init__(self, ciphers):
         self.ciphers = ciphers
         self.num = len(ciphers)
-        self.len = max([len(c) for c in ciphers])
         
         self.init_ciphers()
 
     def init_ciphers(self):
         # Check if there are more than 2 ciphertexts
         assert self.num > 1, "Not enough ciphertexts"
+
+        lengths = [len(c) for c in self.ciphers]
         
         # Check if the ciphertexts have an even length
-        assert self.len % 2 == 0, "Odd ciphertext length"
+        assert lengths[0] % 2 == 0, "Odd ciphertext length"
+
+        # Check if all ciphertexts have the same length
+        assert max(lengths) == min(lengths), "Ciphertext length not match"
 
         for i in range(self.num):
-            # Check if the ciphertexts have the same length
-            if len(self.ciphers[i]) != self.len:
-                assert len(self.ciphers[i]) * 2 == self.len, "Ciphertext length not match"
+            # Convert ASCII ciphers to hex
+            try:
+                int(self.ciphers[i], 16)
+            except ValueError:
                 self.ciphers[i] = self.ciphers[i].encode().hex()
-
-            else:
-                # Convert ASCII ciphers to hex
-                try:
-                    int(self.ciphers[i], 16)
-                except ValueError:
-                    self.ciphers[i] = self.ciphers[i].encode().hex()
-                    self.len *= 2
+                self.len *= 2
 
 def is_range(char, search_range):
     """Return True if all the characters are in ASCII range"""
@@ -142,7 +140,7 @@ def main():
     title_label = ttk.Label(main_frame, text="XOR Autodecoder", font=("Arial", 16, "bold"))
     title_label.grid(row=0, column=0, columnspan=4, pady=(0, 10))
 
-    # Ciphertexts input bars (dynamic)
+    # Ciphertexts input bars
     cipher_frame = ttk.LabelFrame(main_frame, text="Ciphertexts", padding="8 8 8 8")
     cipher_frame.grid(row=1, column=0, columnspan=4, sticky="ew", pady=(0, 10))
     cipher_entries = []
@@ -171,7 +169,7 @@ def main():
         for i, e in enumerate(cipher_entries):
             cipher_frame.grid_slaves(row=i, column=0)[0].config(text=f"Ciphertext {i+1}:")
 
-    # Add default ciphertexts (not removable)
+    # Add example ciphertexts
     add_ciphertext("2c1549100043130b1000290a1b", removable=False)
     add_ciphertext("3f16421617175203114c020b1c", removable=False)
 
