@@ -5,19 +5,19 @@ class Ciphers:
     def __init__(self, ciphers):
         self.ciphers = ciphers
         self.num = len(ciphers)
+        self.len = len(ciphers[0])
         
         self.init_ciphers()
 
     def init_ciphers(self):
         # Check if there are more than 2 ciphertexts
         assert self.num > 1, "Not enough ciphertexts"
-
-        lengths = [len(c) for c in self.ciphers]
         
         # Check if the ciphertexts have an even length
-        assert lengths[0] % 2 == 0, "Odd ciphertext length"
+        assert self.len % 2 == 0, "Odd ciphertext length"
 
         # Check if all ciphertexts have the same length
+        lengths = [len(c) for c in self.ciphers]
         assert max(lengths) == min(lengths), "Ciphertext length not match"
 
         for i in range(self.num):
